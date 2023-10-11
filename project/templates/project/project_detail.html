@@ -1,0 +1,12 @@
+{% extends "base_generic_project.html" %}
+
+{% block content %}
+
+<h1>Nombre del proyecto: {{ project.title }} </h1>
+<hl>
+<div>
+    <h5>Día en que se publicó: {{ project.date_published }}</h5>
+    <h5>Compañía encargada del proyecto: {{ project.company }}</h4>
+    <h4>¿De qué trata el proyecto?: {{ project.summary }}</h4>
+</div>
+{% endblock %}
