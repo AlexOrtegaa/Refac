@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-
+from django.contrib import messages
+from .forms import CustomUserCreationForm
 # Create your views here.
 
 def loginUser(request):
@@ -18,7 +18,7 @@ def loginUser(request):
         try:
             user = User.objects.get(username=username)
         except:
-            print("Username does not exist")
+            messages.error(request, 'Usuario no existente')
 
         user = authenticate(request, username=username, password=password)
 
@@ -26,28 +26,36 @@ def loginUser(request):
             login(request, user)
             return redirect('index')
         else:
-            print("Username or password is incorrect")
+            messages.error(request, 'Contraseño o usuario incorrecto')
 
 
     return render(request, 'users/login_register.html', context)
 
 def logoutUser(request):
     logout(request)
+    messages.error(request, 'Correcto cierre de sesión')
     return redirect('login')
+from django.views.decorators.csrf import csrf_exempt
+
 
 def registerUser(request):
     page = 'register'
-    form = UserCreationForm()
+    form = CustomUserCreationForm()
+
 
     if request.method=='POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
             user.save()
+
+            messages.success(request, '¡Cuenta creada!')
             
             login(request, user)
             return redirect('index')
+        else:
+            messages.success(request, 'Ocurrió un error durante el registro.')
 
     context = {'page':page, 'form': form}
     return render(request, 'users/login_register.html', context)

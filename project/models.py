@@ -6,8 +6,7 @@ from django.contrib.auth.models import User
 from datetime import date
 # Create your models here.
 class Project(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, unique=True,
-                          primary_key=True, editable=False)
+    
     title = models.CharField(max_length=200, help_text='Ingresa el título del proyecto.')
     summary = models.TextField(default="",max_length=1000, help_text='Ingresa una descripción de la inversión.')
     mini_summary = models.TextField(default="",max_length=50, help_text='Ingresa una descripción breve de la inversión. No más de 50 carácteres.')
@@ -25,14 +24,14 @@ class Project(models.Model):
         permissions = (("can_add_project", "Puede añadir proyecto"),)
     
 class ProjectInstance(models.Model):
-    project = models.ForeignKey('Project', on_delete=models.SET_NULL, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
     date_acquired = models.DateField(null=True, blank=True, help_text='Fecha de unión al proyecto')
     date_of_end_contract = models.DateField(null=True, blank=True, help_text='Fecha de fin de unión al proyecto')
     investment = models.DecimalField(default=0, max_digits=19, decimal_places=10)
-    investor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True, default=1)
+    investor =  models.ForeignKey(
+        Profile, on_delete=models.CASCADE, null=True, blank=True)
     rate_time = models.IntegerField(default=0)
-    id = models.UUIDField(default=uuid.uuid4, unique=True,
-                          primary_key=True, editable=False)
+    
     
     @property
     def proyect_participation_ended(self):
